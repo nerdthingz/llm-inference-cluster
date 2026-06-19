@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: vllm-qwen
+    static_configs:
+      - targets:
+          # host.docker.internal lets the container reach the host's port 8000
+          - host.docker.internal:8000
+    metrics_path: /metrics
+
+  - job_name: vllm-qwen-small
+    static_configs:
+      - targets:
+          - host.docker.internal:8001
+    metrics_path: /metrics

@@ -1,0 +1,24 @@
+# downloaded model weights 
+model-cache/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# logs
+*.log
+logs.txt
+
+# kind kubeconfig 
+kubeconfig*.yaml

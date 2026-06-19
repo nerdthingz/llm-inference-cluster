@@ -1,0 +1,43 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: qwen-1-5b
+  namespace: default
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    containers:
+      - name: kserve-container
+        image: vllm/vllm-openai:v0.6.3
+        args:
+          - "--model"
+          - "Qwen/Qwen2.5-1.5B-Instruct"
+          - "--max-model-len"
+          - "1024"
+          - "--max-num-seqs"
+          - "4"
+          - "--dtype"
+          - "bfloat16"
+          - "--device"
+          - "cpu"
+          - "--port"
+          - "8080"
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "2"
+          limits:
+            memory: "5Gi"
+            cpu: "4"
+        volumeMounts:
+          - mountPath: /root/.cache/huggingface
+            name: model-cache
+    volumes:
+      - name: model-cache
+        hostPath:
+          path: /model-cache
+          type: DirectoryOrCreate

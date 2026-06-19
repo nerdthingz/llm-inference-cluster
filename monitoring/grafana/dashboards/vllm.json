@@ -1,0 +1,94 @@
+{
+  "title": "vLLM Inference Dashboard",
+  "uid": "vllm-main",
+  "schemaVersion": 36,
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Tokens Per Second (Throughput)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(vllm:generation_tokens_total[1m])",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Requests Running",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "vllm:num_requests_running",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "GPU KV Cache Usage %",
+      "type": "gauge",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "minVizValue": 0,
+        "maxVizValue": 1
+      },
+      "targets": [
+        {
+          "expr": "vllm:gpu_cache_usage_perc",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Time Per Output Token P99 (sec)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, rate(vllm:time_per_output_token_seconds_bucket[1m]))",
+          "legendFormat": "p99 {{job}}"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(vllm:time_per_output_token_seconds_bucket[1m]))",
+          "legendFormat": "p95 {{job}}"
+        },
+        {
+          "expr": "histogram_quantile(0.50, rate(vllm:time_per_output_token_seconds_bucket[1m]))",
+          "legendFormat": "p50 {{job}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Requests Waiting in Queue",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "vllm:num_requests_waiting",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Total Requests Finished",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "vllm:request_success_total",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    }
+  ],
+  "time": { "from": "now-15m", "to": "now" }
+}

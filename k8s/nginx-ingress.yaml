@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: llm-baseline
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                # 80% traffic goes to the stable 1.5B model
+                name: qwen-1-5b-predictor
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: llm-canary
+  namespace: default
+  annotations:
+    # marks this as the canary ingress
+    nginx.ingress.kubernetes.io/canary: "true"
+    # 20% of traffic goes to the 0.5B model
+    nginx.ingress.kubernetes.io/canary-weight: "20"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: qwen-0-5b-predictor
+                port:
+                  number: 80
