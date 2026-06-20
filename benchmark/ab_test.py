@@ -52,7 +52,7 @@ async def main():
     backend_counts = Counter(r["backend"] for r in results)
     print(f"\nTotal requests: {NUM_REQUESTS}")
     print(f"Backend distribution: {dict(backend_counts)}")
-    print(f"Expected ~80/20 split (qwen/tinyllama)\n")
+    print("Expected ~80/20 split (qwen/tinyllama)\n")
 
     for backend in backend_counts:
         backend_results = [r for r in results if r["backend"] == backend]
